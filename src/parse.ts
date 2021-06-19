@@ -1,12 +1,12 @@
+export type TeamDetails = {
+  name: string;
+  score?: number;
+  points?: number;
+  position?: number;
+};
 export type MatchResults = {
-  teamA: {
-    name: string;
-    score: number;
-  };
-  teamB: {
-    name: string;
-    score: number;
-  };
+  teamA: TeamDetails;
+  teamB: TeamDetails;
 };
 
 export const parseScores = (scoreLine: string): MatchResults => {
