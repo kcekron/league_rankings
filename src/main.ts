@@ -1,19 +1,25 @@
-import * as fs from "fs";
+import { readFileSync } from "fs";
 import { evaluateScores } from "./evaluate";
 import { parseScores } from "./parse";
-import { calculateRank, calculateTotalPointsAndSort } from "./rank";
+import { calculateRank, calculateTotalPoints } from "./rank";
 
-const lines = fs.readFileSync("./scores", "utf-8");
+const args = process.argv.slice(2);
+if (args.length !== 1) {
+  throw new Error("usage: node main.js <path>");
+}
+const scoresPath = args[0];
+const scores = readFileSync(scoresPath, "utf-8").split("\n");
 
-const parsed = lines
-  .split("\n")
-  .map((l) => parseScores(l))
-  .map((scores) => evaluateScores(scores));
+// Parse scores file & calculate scores
+const parsed = scores.map((score) => parseScores(score)).map((score) => evaluateScores(score));
 
-const scores = calculateTotalPointsAndSort(parsed);
+// Calculatre points
+const totals = calculateTotalPoints(parsed);
 
-const ranked = calculateRank(scores);
+// Sort and rank
+const ranked = calculateRank(totals);
 
-console.log(
-  ranked.map((rank) => `${rank.position}. ${rank.name}, ${rank.points} ${rank.points === 1 ? "pt" : "pts"}`).join("\n"),
-);
+// Print
+ranked
+  .map((rank) => `${rank.position}. ${rank.name}, ${rank.points} ${rank.points === 1 ? "pt" : "pts"}`)
+  .forEach((rank) => console.info(rank));
