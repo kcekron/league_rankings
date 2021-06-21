@@ -1,6 +1,6 @@
 import { MatchResults, TeamDetails } from "./parse";
 
-export const calculateTotalPointsAndSort = (results: MatchResults[]): TeamDetails[] => {
+export const calculateTotalPoints = (results: MatchResults[]): TeamDetails[] => {
   const points: TeamDetails[] = [];
 
   results.forEach((result) => {
@@ -25,10 +25,13 @@ export const calculateTotalPointsAndSort = (results: MatchResults[]): TeamDetail
     teamB.points += result.teamB.points;
   });
 
-  return points.sort((teamA, teamB) => teamB.points - teamA.points);
+  return points;
 };
 
-export const calculateRank = (sorted: TeamDetails[]): TeamDetails[] => {
+export const calculateRank = (teamDetails: TeamDetails[]): TeamDetails[] => {
+  const sorted = teamDetails.sort(
+    (teamA, teamB) => teamB.points - teamA.points || teamA.name.localeCompare(teamB.name),
+  );
   sorted.forEach((element, index) => {
     if (index > 0 && sorted[index - 1].points === element.points) {
       element.position = sorted[index - 1].position;
